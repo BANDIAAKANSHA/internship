@@ -1,0 +1,67 @@
+import random
+
+class User:
+    def __init__(self, phone_num, available_amount=0):
+        self.phone_num = phone_num
+        self.available_amount = available_amount
+
+class Transaction:
+    def __init__(self, sender, recipient, amount):
+        self.sender = sender
+        self.recipient = recipient
+        self.amount = amount
+
+def login(phone_num):
+    # Simulated user data
+    # In a real application, this data would come from a database
+    users = {
+        "1234567890": User("1234567890", 500),
+        "9876543210": User("9876543210", 1000)
+    }
+
+    if phone_num in users:
+        return users[phone_num]
+    else:
+        print("User not found. Creating a new account.")
+        new_user = User(phone_num)
+        users[phone_num] = new_user
+        return new_user
+
+def transfer_amount(sender, recipient, amount):
+    if sender.available_amount >= amount:
+        sender.available_amount -= amount
+        recipient.available_amount += amount
+        return Transaction(sender.phone_num, recipient.phone_num, amount)
+    else:
+        return "Insufficient balance"
+
+def handle_cashback(transaction):
+    amount = transaction.amount
+    if amount % 500 == 0:
+        print("Transaction amount is a multiple of 500. No cashback.")
+    else:
+        if amount < 1000:
+            cashback = amount * 0.05
+            print(f"Congratulations! You received a 5% cashback of {cashback}.")
+        else:
+            cashback = amount * 0.02
+            print(f"Congratulations! You received a 2% cashback of {cashback}.")
+
+# Example usage:
+
+# Simulating a user logging in
+current_user = login("1234567890")
+
+# Simulating another user logging in
+recipient_user = login("9876543210")
+
+# Transfer amount from one user to another
+transaction = transfer_amount(current_user, recipient_user, 300)
+if isinstance(transaction, Transaction):
+    handle_cashback(transaction)
+else:
+    print(transaction)
+
+# Display user balances
+print(f"Sender's available amount: {current_user.available_amount}")
+print(f"Recipient's available amount: {recipient_user.available_amount}")
